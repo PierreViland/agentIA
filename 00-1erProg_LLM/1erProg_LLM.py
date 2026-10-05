@@ -12,14 +12,19 @@ Réponds toujours au format JSON : {"reponse": "ta réponse ici"}"""
 
 def demander_au_llm(messages):
     payload = {"model": MODEL, "messages": messages, "stream": False, "format": "json"}
+    
+    print("---Requete---")
+    print(json.dumps(payload, indent=4, ensure_ascii=False))
+    print("--- Fin Requete---")
     r = requests.post(f"{OLLAMA_URL}/api/chat", json=payload, timeout=120)
     r.raise_for_status()
-    print(type(r))          # <class 'requests.models.Response'>
-    print(r.status_code)    # 200 si tout va bien
-    print(r.headers)        # en-têtes HTTP de la réponse
-    print(r.text)           # corps de la réponse, en texte brut (str)
-    print(r.json())         # corps converti en dictionnaire Python (dict)
-    print(r.elapsed)        # durée de la requête
+    
+    
+    print("---Reponse---")
+    print(json.dumps(r.json(), indent=4, ensure_ascii=False))
+    print("--- fin Reponse---")
+  	
+	
     return r.json()["message"]["content"]
 
 
@@ -29,12 +34,14 @@ def agent(question):
         {"role": "user", "content": question},
     ]
     brut = demander_au_llm(messages)
-    print("Réponse brute :", repr(brut))
-    print("Réponse :", json.loads(brut).get("reponse") or data)
+    
+    
+    
+    print("Réponse :", json.loads(brut).get("reponse"))
 
 
 
 if __name__ == "__main__":
-    agent("Raconte moi une blague")
+    agent("Explique le protocole HTTP")
 
 
