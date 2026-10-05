@@ -11,7 +11,17 @@ Réponds toujours au format JSON : {"reponse": "ta réponse ici"}"""
 
 
 def demander_au_llm(messages):
-    payload = {"model": MODEL, "messages": messages, "stream": False, "format": "json"}
+    payload = {
+    "model": MODEL,
+    "messages": messages,
+    "stream": False,
+    "format": {
+        "type": "object",
+        "properties": {"reponse": {"type": "string"}},
+        "required": ["reponse"],
+    },
+    "options": {"temperature": 0, "num_predict": 300},
+    }
     
     print("---Requete---")
     print(json.dumps(payload, indent=4, ensure_ascii=False))
@@ -42,6 +52,6 @@ def agent(question):
 
 
 if __name__ == "__main__":
-    agent("Explique le protocole HTTP")
+    agent("Résume le livre écrit par Pierre Viland")
 
 
