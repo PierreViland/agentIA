@@ -35,6 +35,6 @@ def agent(question):
 
 
 if __name__ == "__main__":
-    agent("Comment faire le jeu soupape d'un guzzi V11")
+    agent("Raconte moi une blague")
 
 
