@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-Agent IA minimal (BTS CIEL) 
+Agent IA minimal (BTS CIEL) : plusieurs tours pour trouver une information.
+
+Question : "Quels ports sont ouverts sur serveur-web ?"
+  Tour 1 : trouver_ip("serveur-web")      -> 192.168.1.10
+  Tour 2 : trouver_ports("192.168.1.10")  -> [22, 80, 443]
+  Tour 3 : réponse finale
 """
 
 import json
@@ -26,13 +31,14 @@ PORTS = {
 
 # ----------------------------------------------------------------------
 # Les outils (ils sont exécutés à l'ÉTAPE 8)
+# Tous reçoivent la même clé d'argument : "valeur"
 # ----------------------------------------------------------------------
 def trouver_ip(args):
-    return {"ip": IP.get(args["nom"], "inconnue")}
+    return {"ip": IP.get(args["valeur"], "inconnue")}
 
 
 def trouver_ports(args):
-    return {"ports": PORTS.get(args["ip"], "inconnus")}
+    return {"ports": PORTS.get(args["valeur"], "inconnus")}
 
 
 # Table de correspondance : nom donné par le LLM -> fonction Python
@@ -42,8 +48,8 @@ TOOLS = {"trouver_ip": trouver_ip, "trouver_ports": trouver_ports}
 # Description des outils : seul moyen pour le LLM de savoir qu'ils existent
 # ----------------------------------------------------------------------
 TOOLS_DESCRIPTION = """
-- trouver_ip(nom)    : donne l'adresse IP d'une machine à partir de son nom.
-- trouver_ports(ip)  : donne la liste des ports ouverts d'une adresse IP.
+- trouver_ip     : prend un NOM de machine (ex. serveur-web ou serveur_DHCP), renvoie son adresse IP.
+- trouver_ports  : prend une ADRESSE IP (ex. 192.168.1.1), renvoie ses ports ouverts. Ne fonctionne pas avec un nom de machine.
 """
 
 SYSTEM_PROMPT = f"""Tu es un agent réseau. Tu ne connais aucune adresse IP ni aucun port :
@@ -52,9 +58,13 @@ tu dois utiliser les outils, un seul par tour.
 Outils disponibles :
 {TOOLS_DESCRIPTION}
 
-Réponds UNIQUEMENT en JSON :
-Pour appeler un outil : {{"action": "outil", "nom": "trouver_ip", "args": {{"nom": "xxx"}}}}
-Pour conclure         : {{"action": "reponse", "texte": "ta réponse en français"}}"""
+Réponds UNIQUEMENT en JSON, avec l'un de ces deux formats :
+{{"action": "outil_selection", "nom_outil": "trouver_ip", "args": {{"valeur": "xxx"}}}}
+{{"action": "outil_selection", "nom_outil": "trouver_port", "args": {{"valeur": "xxx"}}}}
+{{"action": "reponse", "texte": "ta réponse en français"}}
+
+Le premier format sert à appeler n'importe quel outil : change seulement
+le nom de l'outil et la valeur."""
 
 
 def demander_au_llm(messages):
@@ -68,7 +78,7 @@ def demander_au_llm(messages):
 def agent(question):
     # [ÉTAPE 1] DÉBUT : "question" est la question de l'utilisateur.
 
-    # [ÉTAPE 2] Création de la liste messages avec le prompt système (rôle
+    # [ÉTAPE 2] Création de la liste messages (rôle system + rôle user).
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": question},
@@ -85,10 +95,9 @@ def agent(question):
         print("Le LLM répond :", brut)
 
         # [ÉTAPE 5] DÉCISION : on garde la réponse du LLM dans l'historique
-        # (rôle assistant), pour qu'il la retrouve au tour suivant.
         messages.append({"role": "assistant", "content": brut})
 
-        # [ÉTAPE 6] DÉCISION : décodage du JSON (texte -> dictionnaire Python).        
+        # [ÉTAPE 6] DÉCISION : décodage du JSON (texte -> dictionnaire Python).
         try:
             decision = json.loads(brut)
         except json.JSONDecodeError:
@@ -107,37 +116,36 @@ def agent(question):
             # [ÉTAPE 13] FIN
             return
 
-        # [ÉTAPE 7suite] Validation : est-ce bien un appel d'outil connu ?
-        if decision.get("action") != "outil" or decision.get("nom") not in TOOLS:
+        # [ÉTAPE 7b] Validation : est-ce bien un appel d'outil connu ?
+        if decision.get("action") != "outil_selection" or decision.get("nom_outil") not in TOOLS:
             print("[!] Format inattendu, on demande au LLM de se corriger.")
             messages.append({
                 "role": "user",
                 "content": (
-                    'Format invalide. Utilise exactement : {"action": "outil", '
-                    '"nom": "trouver_ip" ou "trouver_ports", "args": {...}}'
+                    'Format invalide. Utilise exactement : {"action": "outil_selection", '
+                    '"nom_outil": "trouver_ip" ou "trouver_ports", '
+                    '"args": {"valeur": "..."}}'
                 ),
             })
             continue  # retour à l'ÉTAPE 3 (tour suivant)
 
-        # [ÉTAPE 8] ACTION : exécution de l'outil
+        # [ÉTAPE 8] ACTION : exécution de l'outil.
+        # IMPORTANT : la clé lue ici doit être celle du prompt ("nom_outil").
         try:
-            resultat = TOOLS[decision["nom"]](decision.get("args", {}))
-        except (KeyError, TypeError):
-            resultat = {"erreur": "arguments invalides, vérifie les noms des arguments"}
+            resultat = TOOLS[decision["nom_outil"]](decision.get("args", {}))
+        except (KeyError, TypeError) as e:
+            resultat = {"erreur": f"arguments invalides ({type(e).__name__} {e}), "
+                                  f"reçus : {decision.get('args')}"}
         print("Outil exécuté ->", resultat)
-        
 
         # [ÉTAPE 9] PERCEPTION : le résultat de l'outil est ajouté à messages
         # (rôle user). Au tour suivant, le LLM le "perçoit" et peut décider.
         messages.append({"role": "user", "content": f"Résultat : {json.dumps(resultat)}"})
-        print("---Requete---")
-        print(json.dumps(messages, indent=4, ensure_ascii=False))
-        print("--- Fin Requete---")
-        
+
     # [ÉTAPE 11] Sortie "Trop de tours" : MAX_TOURS atteint sans réponse finale.
     print("\n[Trop de tours, l'agent n'a pas conclu.]")
     # [ÉTAPE 13] FIN : fin de la fonction.
 
 
 if __name__ == "__main__":
-    agent("Quels ports sont ouverts sur serveur-web ?")
+    agent("Quels ports sont ouverts sur la machine avec le nom serveur-web ?")
