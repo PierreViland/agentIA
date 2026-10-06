@@ -20,7 +20,7 @@ def demander_au_llm(messages):
         "properties": {"reponse": {"type": "string"}},
         "required": ["reponse"],
     },
-    "options": {"temperature": 0, "num_predict": 300},
+    #"options": {"temperature": 0, "num_predict": 300},
     }
     
     print("---Requete---")
@@ -52,6 +52,6 @@ def agent(question):
 
 
 if __name__ == "__main__":
-    agent("Résume le livre écrit par Pierre Viland")
+    agent("Quel est le meilleur livre écrit par aya Nakamrua?")
 
 
