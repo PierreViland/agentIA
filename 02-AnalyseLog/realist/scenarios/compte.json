@@ -1,0 +1,47 @@
+{
+  "alerte": "Connexion SSH réussie en root à 02:14 depuis 172.18.0.4, après plusieurs échecs.",
+  "auth": [
+    {"time": "02:14:03", "ip": "172.18.0.4", "user": "root", "result": "Failed", "session": null},
+    {"time": "02:14:05", "ip": "172.18.0.4", "user": "root", "result": "Failed", "session": null},
+    {"time": "02:14:07", "ip": "172.18.0.4", "user": "root", "result": "Failed", "session": null},
+    {"time": "02:14:09", "ip": "172.18.0.4", "user": "root", "result": "Failed", "session": null},
+    {"time": "02:14:12", "ip": "172.18.0.4", "user": "root", "result": "Accepted", "session": "s-1001"},
+    {"time": "02:20:30", "ip": "172.18.0.4", "user": "backdoor", "result": "Accepted", "session": "s-1002"},
+    {"time": "08:31:02", "ip": "10.0.0.5", "user": "pierre", "result": "Accepted", "session": "s-1003"}
+  ],
+  "commandes": {
+    "s-1001": ["useradd -m backdoor", "passwd backdoor", "usermod -aG sudo backdoor", "exit"],
+    "s-1002": ["sudo cat /etc/shadow", "exit"],
+    "s-1003": ["ls", "exit"]
+  },
+  "pare_feu": [
+    {"time": "02:14:00", "src": "172.18.0.4", "dst": "10.0.0.20", "port": 22, "mb": 0},
+    {"time": "09:00:00", "src": "10.0.0.20", "dst": "192.0.2.10", "port": 443, "mb": 5}
+  ],
+  "comptes": [
+    {"account": "backdoor", "created_at": "02:15:40", "by_session": "s-1001"}
+  ],
+  "verite": {
+    "faits_attendus": [
+      {
+        "fait": "compte backdoor créé",
+        "mots_cles": [
+          "backdoor"
+        ]
+      },
+      {
+        "fait": "lecture de /etc/shadow",
+        "mots_cles": [
+          "shadow"
+        ]
+      },
+      {
+        "fait": "IP attaquante 172.18.0.4",
+        "mots_cles": [
+          "172.18.0.4"
+        ]
+      }
+    ],
+    "a_ne_pas_accuser": []
+  }
+}
