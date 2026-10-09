@@ -27,6 +27,11 @@ OLLAMA_URL = "http://192.168.1.20:11434"
 MODEL = "qwen3:8b"#"mistral:latest"
 MAX_TOURS = 15   # les appels refusés par un garde-fou consomment aussi des tours
 
+# Réglages de génération (voir call_llm)
+NUM_PREDICT = 1200   # longueur max d'une réponse, en tokens (assez pour le rapport final)
+NUM_CTX = 8192       # taille de la "mémoire" du modèle : prompt système + tout l'historique
+TIMEOUT = 600        # sur CPU (~3-4 tokens/s), 1200 tokens peuvent prendre plus de 5 min
+
 # ----------------------------------------------------------------------
 # Les incidents sont des fichiers JSON dans le dossier scenarios/
 # (données fictives). Pour en ajouter un : déposer un fichier .json.
@@ -138,6 +143,8 @@ Exemples :
 {{"action": "list_new_accounts", "args": {{}}}}
 {{"action": "final_answer", "summary": "<ton rapport en français>"}}
 
+Le "summary" du final_answer fait 8 phrases MAXIMUM, sur une seule ligne.
+
 Valeurs possibles pour "action" : {list(TOOLS)} ou "final_answer"."""
 
 
@@ -145,22 +152,30 @@ Valeurs possibles pour "action" : {list(TOOLS)} ou "final_answer"."""
 # Boucle de l'agent
 # ----------------------------------------------------------------------
 def call_llm(messages):
-    # num_predict limite la longueur de la réponse : avec "format": "json", un
-    # petit modèle peut produire des retours à la ligne sans fin et ne jamais
-    # s'arrêter, ce qui provoque un timeout.
+    """Renvoie (texte, tronquee). tronquee = True si la réponse a été coupée
+    par la limite num_predict (le JSON est alors incomplet)."""
+    # - "think": False désactive le raisonnement interne de Qwen3. Ces tokens de
+    #   "réflexion" sont invisibles mais comptent dans num_predict et coûtent
+    #   très cher en temps sur CPU.
+    # - num_predict reste nécessaire : avec "format": "json", un petit modèle peut
+    #   produire des retours à la ligne sans fin et ne jamais s'arrêter.
+    # - num_ctx : sans lui, Ollama utilise un petit contexte par défaut et "oublie"
+    #   le début de la conversation (dont le prompt système) quand l'historique grandit.
     payload = {"model": MODEL, "messages": messages, "stream": False,
-               "format": "json", "options": {"temperature": 0, "num_predict": 500}}
+               "format": "json", "think": False,
+               "options": {"temperature": 0, "num_predict": NUM_PREDICT,
+                           "num_ctx": NUM_CTX}}
     debut = time.perf_counter()
     try:
-        r = requests.post(f"{OLLAMA_URL}/api/chat", json=payload, timeout=300)
+        r = requests.post(f"{OLLAMA_URL}/api/chat", json=payload, timeout=TIMEOUT)
         r.raise_for_status()
         data = r.json()
     except requests.exceptions.Timeout:
-        print("[!] Ollama n'a pas répondu en 300 s.")
-        return None
+        print(f"[!] Ollama n'a pas répondu en {TIMEOUT} s.")
+        return None, False
     except requests.exceptions.RequestException as e:
         print(f"[!] Erreur lors de l'appel à Ollama : {e}")
-        return None
+        return None, False
     finally:
         print(f"(call_llm : {time.perf_counter() - debut:.1f} s)")
 
@@ -170,7 +185,12 @@ def call_llm(messages):
         vitesse = tokens / (data["eval_duration"] / 1e9)
         print(f"   {tokens} tokens générés à {vitesse:.1f} tokens/s")
 
-    return data["message"]["content"]
+    # done_reason vaut "stop" (fin normale) ou "length" (coupé par num_predict)
+    tronquee = data.get("done_reason") == "length"
+    if tronquee:
+        print(f"   [!] Réponse COUPÉE : limite de {NUM_PREDICT} tokens atteinte")
+
+    return data["message"]["content"], tronquee
 
 
 def run_agent(alerte):
@@ -186,7 +206,7 @@ def run_agent(alerte):
         print(f"\n--- Tour {tour} ---")
 
         # DÉCISION : le LLM choisit la prochaine étape
-        raw = call_llm(messages)
+        raw, tronquee = call_llm(messages)
         if raw is None:
             print("Arrêt : vérifiez Ollama (commande : ollama ps).")
             return
@@ -197,8 +217,16 @@ def run_agent(alerte):
             decision = json.loads(raw)
             action = decision["action"]
         except (json.JSONDecodeError, KeyError, TypeError):
-            messages.append({"role": "user", "content":
-                'Réponse invalide. Réponds avec un JSON contenant le champ "action".'})
+            if tronquee:
+                # Le modèle avait bien compris, mais sa réponse était trop longue :
+                # on lui dit précisément quoi corriger.
+                messages.append({"role": "user", "content":
+                    "Ta réponse a été coupée car elle était trop longue, le JSON est "
+                    "incomplet. Renvoie la même réponse en plus court "
+                    "(summary : 5 phrases maximum)."})
+            else:
+                messages.append({"role": "user", "content":
+                    'Réponse invalide. Réponds avec un JSON contenant le champ "action".'})
             continue
 
         if action == "final_answer":
